@@ -53,3 +53,32 @@ export async function getSignedUrl(storagePath, expiresIn = 3600) {
 
   return data.signedUrl;
 }
+
+export function getFileType(storagePath) {
+  if (!storagePath) return 'unknown';
+
+  const extension = storagePath.split('.').pop().toLowerCase();
+
+  const typeMap = {
+    pdf: 'pdf',
+    doc: 'word',
+    docx: 'word',
+    xls: 'excel',
+    xlsx: 'excel',
+    ppt: 'powerpoint',
+    pptx: 'powerpoint',
+    jpg: 'image',
+    jpeg: 'image',
+    png: 'image',
+    gif: 'image',
+    webp: 'image',
+    svg: 'image'
+  };
+
+  return typeMap[extension] || 'unknown';
+}
+
+export function getFileName(storagePath) {
+  if (!storagePath) return 'Documento';
+  return storagePath.split('/').pop() || 'Documento';
+}

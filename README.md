@@ -166,6 +166,22 @@ Los usuarios con rol `admin` o `coordinator` tienen acceso a la pestaña **Dashb
 - Colores intuitivos para cada estado de documento
 - Leyendas y tooltips informativos
 
+## Vista previa de archivos
+
+El sistema permite previsualizar archivos directamente en el navegador sin necesidad de descargarlos.
+
+### Funcionalidades
+
+- **Botón "Ver archivo"**: aparece en el detalle de cada documento que tenga archivo adjunto.
+- **Modal de vista previa**: se abre un modal con el archivo cargado.
+- **Soporte de tipos**:
+  - **PDF**: se muestra en un visor integrado del navegador.
+  - **Imágenes** (JPG, PNG, GIF, WebP, SVG): se muestran directamente.
+  - **Otros tipos** (Word, Excel, PowerPoint): se ofrece botón de descarga.
+- **URLs firmadas**: los archivos se acceden mediante URLs temporales y seguras generadas por Supabase Storage.
+- **Cierre con ESC**: el modal se puede cerrar presionando la tecla ESC o haciendo clic fuera.
+- **Responsive**: el modal se adapta a pantallas de celular y escritorio.
+
 ## Seguridad implementada
 
 - Contraseñas hasheadas con `bcryptjs`

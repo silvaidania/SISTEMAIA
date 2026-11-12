@@ -4,7 +4,7 @@ import { requireAuth, requireRole } from '../middleware/auth.js';
 import { listDocuments, getDocumentById, createDocument, submitCorrection } from '../services/documents.js';
 import { assignDocumentToReviewer, assignDocumentWithBalance } from '../services/assignments.js';
 import { addObservation, resolveObservation, decideDocument } from '../services/observations.js';
-import { uploadDocumentFile } from '../services/storage.js';
+import { uploadDocumentFile, getSignedUrl, getFileType, getFileName } from '../services/storage.js';
 import { supabase } from '../config/supabase.js';
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
@@ -103,6 +103,24 @@ router.post('/upload', requireAuth, requireRole('student'), upload.single('file'
     }
 
     return res.status(201).json({ document });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/file-url', requireAuth, async (req, res, next) => {
+  try {
+    const { path } = req.query;
+
+    if (!path) {
+      return res.status(400).json({ message: 'Ruta de archivo requerida' });
+    }
+
+    const url = await getSignedUrl(path);
+    const fileType = getFileType(path);
+    const fileName = getFileName(path);
+
+    return res.json({ url, fileType, fileName });
   } catch (error) {
     next(error);
   }

@@ -36,6 +36,10 @@
   function submitCorrection() {
     dispatch('correction', { storagePath: correctionPath });
   }
+
+  function previewFile() {
+    dispatch('preview-file', { storagePath: document.storage_path });
+  }
 </script>
 
 {#if document}
@@ -60,6 +64,16 @@
         <span>Versión</span>
         <strong>{document.version || 1}</strong>
       </div>
+      {#if document.storage_path}
+        <div class="detail-item">
+          <span>Archivo</span>
+          <strong>
+            <button type="button" class="secondary" on:click={previewFile} style="width: auto; padding: 0.4rem 0.75rem; font-size: 0.85rem;">
+              Ver archivo
+            </button>
+          </strong>
+        </div>
+      {/if}
     </div>
 
     {#if document.observations?.length}

@@ -9,6 +9,7 @@
   import Notifications from './components/Notifications.svelte';
   import Users from './components/Users.svelte';
   import Dashboard from './components/Dashboard.svelte';
+  import FilePreview from './components/FilePreview.svelte';
 
   let email = '';
   let password = '';
@@ -21,6 +22,8 @@
   let periods = [];
   let balance = [];
   let selectedDocument = null;
+  let showFilePreview = false;
+  let previewStoragePath = '';
 
   async function login() {
     error = '';
@@ -157,6 +160,16 @@
     }
   }
 
+  function handlePreviewFile(event) {
+    previewStoragePath = event.detail.storagePath;
+    showFilePreview = true;
+  }
+
+  function closeFilePreview() {
+    showFilePreview = false;
+    previewStoragePath = '';
+  }
+
   async function assignAuto(id) {
     error = '';
     try {
@@ -288,6 +301,7 @@
               on:add-observation={addObservation}
               on:decision={submitDecision}
               on:correction={submitCorrection}
+              on:preview-file={handlePreviewFile}
             />
             {#if ['admin', 'coordinator'].includes(user.role) && !selectedDocument.reviewer_id}
               <div class="actions">
@@ -341,5 +355,11 @@
         </article>
       </section>
     {/if}
+
+    <FilePreview
+      storagePath={previewStoragePath}
+      show={showFilePreview}
+      on:close={closeFilePreview}
+    />
   </main>
 {/if}
