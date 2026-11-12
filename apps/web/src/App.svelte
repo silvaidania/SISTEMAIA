@@ -6,6 +6,7 @@
   import DocumentForm from './components/DocumentForm.svelte';
   import DocumentDetail from './components/DocumentDetail.svelte';
   import Reports from './components/Reports.svelte';
+  import Notifications from './components/Notifications.svelte';
 
   let email = '';
   let password = '';
@@ -75,6 +76,7 @@
     try {
       const data = await api(`/documents/${id}`);
       selectedDocument = data.document;
+      activeTab = 'documents';
     } catch (err) {
       error = err.message;
     }
@@ -225,7 +227,10 @@
         <h1>Panel de control</h1>
         <p class="muted">{user.full_name} · {user.role}</p>
       </div>
-      <button type="button" class="secondary" on:click={logout}>Cerrar sesión</button>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <Notifications user={user} on:select-document={selectDocument} />
+        <button type="button" class="secondary" on:click={logout}>Cerrar sesión</button>
+      </div>
     </header>
 
     <nav class="tabs">

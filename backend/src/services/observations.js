@@ -42,7 +42,7 @@ export async function addObservation({ documentId, reviewerId, observation, seve
     throw error;
   }
 
-  await updateDocumentStatus(documentId, 'observed');
+  await updateDocumentStatus(documentId, 'observed', { actorId: reviewerId });
 
   await supabase
     .from('document_assignments')
@@ -122,7 +122,8 @@ export async function decideDocument(documentId, reviewerId, decision, notes = '
 
   const updatedDocument = await updateDocumentStatus(documentId, nextStatus, {
     reviewed_at: new Date().toISOString(),
-    reviewer_id: reviewerId
+    reviewer_id: reviewerId,
+    actorId: reviewerId
   });
 
   await supabase

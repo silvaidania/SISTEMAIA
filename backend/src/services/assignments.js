@@ -59,7 +59,8 @@ export async function assignDocumentToReviewer(documentId, reviewerId, assignedB
 
   await updateDocumentStatus(documentId, 'in_review', {
     reviewer_id: reviewerId,
-    assigned_at: new Date().toISOString()
+    assigned_at: new Date().toISOString(),
+    actorId: assignedBy
   });
 
   await supabase

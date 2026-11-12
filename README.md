@@ -103,6 +103,28 @@ Los usuarios con rol `admin` o `coordinator` tienen acceso a la pestaña **Repor
 
 Los reportes de revisores, estudiantes y académico se pueden exportar a CSV.
 
+## Notificaciones
+
+El sistema envía notificaciones automáticas cuando un documento cambia de estado. Los usuarios reciben notificaciones en la campana del panel de control.
+
+### Eventos que generan notificaciones
+
+- Documento enviado
+- Documento asignado a revisor
+- Documento en revisión
+- Documento con observaciones
+- Documento corregido
+- Documento aprobado
+- Documento rechazado
+
+### Funcionalidades
+
+- Campana de notificaciones con contador de no leídas
+- Lista de notificaciones con fecha relativa
+- Marcar como leída individual o todas
+- Clic en notificación navega al documento correspondiente
+- Notificaciones en tiempo real para cambios de estado
+
 ## Seguridad implementada
 
 - Contraseñas hasheadas con `bcryptjs`

@@ -1,4 +1,5 @@
 import { supabase } from '../config/supabase.js';
+import { notifyDocumentStatusChange } from './notifications.js';
 
 export async function listDocuments({ userId, role, status, search }) {
   let query = supabase
@@ -157,6 +158,24 @@ export async function createDocument({ studentId, academicPeriodId, title, docum
 }
 
 export async function updateDocumentStatus(documentId, status, extra = {}) {
+  const { data: currentDoc, error: currentError } = await supabase
+    .from('documents')
+    .select(`
+      id,
+      title,
+      status,
+      student:students(
+        profile_id
+      ),
+      reviewer_id
+    `)
+    .eq('id', documentId)
+    .single();
+
+  if (currentError) {
+    throw currentError;
+  }
+
   const updates = {
     status,
     updated_at: new Date().toISOString(),
@@ -176,6 +195,33 @@ export async function updateDocumentStatus(documentId, status, extra = {}) {
 
   if (error) {
     throw error;
+  }
+
+  if (currentDoc && currentDoc.status !== status) {
+    const documentWithDetails = {
+      ...currentDoc,
+      student: {
+        profile_id: currentDoc.student?.profile_id
+      }
+    };
+
+    try {
+      const { data: actorProfile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', extra.actorId)
+        .single();
+
+      await notifyDocumentStatusChange(
+        documentWithDetails,
+        currentDoc.status,
+        status,
+        extra.actorId || null,
+        actorProfile?.role || null
+      );
+    } catch (notificationError) {
+      console.error('Error sending notification:', notificationError);
+    }
   }
 
   return data;
@@ -230,7 +276,8 @@ export async function submitCorrection(documentId, userId, { storagePath, notes 
   const updatedDocument = await updateDocumentStatus(documentId, 'corrected', {
     storage_path: storagePath,
     version: nextVersion,
-    submitted_at: new Date().toISOString()
+    submitted_at: new Date().toISOString(),
+    actorId: userId
   });
 
   await supabase

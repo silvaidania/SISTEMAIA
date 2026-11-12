@@ -6,6 +6,7 @@ import loadBalanceRoutes from './loadBalance.js';
 import documentRoutes from './documents.js';
 import academicPeriodRoutes from './academicPeriods.js';
 import reportRoutes from './reports.js';
+import notificationRoutes from './notifications.js';
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.use('/load-balance', loadBalanceRoutes);
 router.use('/documents', documentRoutes);
 router.use('/academic-periods', academicPeriodRoutes);
 router.use('/reports', reportRoutes);
+router.use('/notifications', notificationRoutes);
 
 export function createApiRouter() {
   return router;
