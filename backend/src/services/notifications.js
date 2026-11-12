@@ -1,4 +1,5 @@
 import { supabase } from '../config/supabase.js';
+import { sendEmail, getStatusEmailTemplate } from './email.js';
 
 export async function createNotification({ userId, type, title, message, documentId = null }) {
   const { data, error } = await supabase
@@ -114,6 +115,7 @@ export async function notifyDocumentStatusChange(document, oldStatus, newStatus,
   const message = `El documento "${document.title}" cambió de ${oldStatus} a ${newStatus}.`;
 
   const notifications = [];
+  const emailRecipients = [];
 
   if (document.student?.profile_id) {
     notifications.push({
@@ -123,6 +125,19 @@ export async function notifyDocumentStatusChange(document, oldStatus, newStatus,
       message,
       documentId: document.id
     });
+
+    const { data: studentProfile } = await supabase
+      .from('profiles')
+      .select('email, full_name')
+      .eq('id', document.student.profile_id)
+      .single();
+
+    if (studentProfile?.email) {
+      emailRecipients.push({
+        email: studentProfile.email,
+        name: studentProfile.full_name
+      });
+    }
   }
 
   if (document.reviewer_id && document.reviewer_id !== actorId) {
@@ -133,12 +148,25 @@ export async function notifyDocumentStatusChange(document, oldStatus, newStatus,
       message,
       documentId: document.id
     });
+
+    const { data: reviewerProfile } = await supabase
+      .from('profiles')
+      .select('email, full_name')
+      .eq('id', document.reviewer_id)
+      .single();
+
+    if (reviewerProfile?.email) {
+      emailRecipients.push({
+        email: reviewerProfile.email,
+        name: reviewerProfile.full_name
+      });
+    }
   }
 
   if (actorRole && ['admin', 'coordinator'].includes(actorRole)) {
     const { data: staff } = await supabase
       .from('profiles')
-      .select('id')
+      .select('id, email, full_name')
       .in('role', ['admin', 'coordinator'])
       .eq('is_active', true);
 
@@ -152,6 +180,13 @@ export async function notifyDocumentStatusChange(document, oldStatus, newStatus,
             message,
             documentId: document.id
           });
+
+          if (user.email) {
+            emailRecipients.push({
+              email: user.email,
+              name: user.full_name
+            });
+          }
         }
       });
     }
@@ -162,6 +197,21 @@ export async function notifyDocumentStatusChange(document, oldStatus, newStatus,
       await createNotification(notification);
     } catch (error) {
       console.error('Error sending notification:', error);
+    }
+  }
+
+  const emailTemplate = getStatusEmailTemplate(document, oldStatus, newStatus);
+
+  for (const recipient of emailRecipients) {
+    try {
+      await sendEmail({
+        to: recipient.email,
+        subject: `${title} - ${document.title}`,
+        html: emailTemplate.html,
+        text: emailTemplate.text
+      });
+    } catch (error) {
+      console.error('Error sending email to', recipient.email, ':', error);
     }
   }
 }

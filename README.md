@@ -182,6 +182,42 @@ El sistema permite previsualizar archivos directamente en el navegador sin neces
 - **Cierre con ESC**: el modal se puede cerrar presionando la tecla ESC o haciendo clic fuera.
 - **Responsive**: el modal se adapta a pantallas de celular y escritorio.
 
+## Notificaciones por email
+
+El sistema envía notificaciones por email automáticamente cuando un documento cambia de estado.
+
+### Configuración de email
+
+Para habilitar las notificaciones por email, configura las siguientes variables de entorno:
+
+- `SMTP_HOST`: servidor SMTP (ej. smtp.gmail.com)
+- `SMTP_PORT`: puerto SMTP (ej. 587)
+- `SMTP_SECURE`: true para SSL/TLS, false para STARTTLS
+- `SMTP_USER`: usuario de email
+- `SMTP_PASS`: contraseña o app password
+- `SMTP_FROM`: dirección de remitente
+- `APP_URL`: URL de la aplicación para enlaces en emails
+
+### Plantillas de email
+
+Los emails incluyen:
+
+- Encabezado con color según el estado del documento
+- Información del documento (título, tipo, estado anterior y actual)
+- Botón para ver el documento en el sistema
+- Diseño responsive para móvil y escritorio
+- Versión en texto plano como respaldo
+
+### Eventos que envían email
+
+- Documento enviado
+- Documento asignado a revisor
+- Documento en revisión
+- Documento con observaciones
+- Documento corregido
+- Documento aprobado
+- Documento rechazado
+
 ## Seguridad implementada
 
 - Contraseñas hasheadas con `bcryptjs`
