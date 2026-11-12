@@ -107,7 +107,8 @@
 <div class="auth-container">
   <div class="auth-card">
     <h2>{isSignUp ? 'Crear cuenta' : 'Iniciar sesión'}</h2>
-    <p class="subtitle">Sistema de Gestión de Documentos de Estadías</p>
+    <p class="subtitle">Universidad Tecnológica de Ciudad Juárez</p>
+    <p class="subtitle-small">Sistema de Gestión de Documentos de Estadías</p>
 
     {#if error}
       <div class="error-message">{error}</div>
@@ -200,7 +201,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #f97316 100%);
     padding: 1rem;
   }
 
@@ -211,19 +212,29 @@
     width: 100%;
     max-width: 400px;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #f97316;
   }
 
   h2 {
     text-align: center;
     margin-bottom: 0.5rem;
-    color: #1f2937;
+    color: #1e3a8a;
+    font-weight: 700;
   }
 
   .subtitle {
     text-align: center;
     color: #6b7280;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
     font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .subtitle-small {
+    text-align: center;
+    color: #9ca3af;
+    margin-bottom: 2rem;
+    font-size: 0.75rem;
   }
 
   .error-message {
@@ -261,7 +272,7 @@
   }
 
   .google-button:hover {
-    border-color: #4285f4;
+    border-color: #3b82f6;
     background: #f9fafb;
   }
 
@@ -318,14 +329,14 @@
 
   input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
 
   .submit-button {
     width: 100%;
     padding: 0.75rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -337,6 +348,7 @@
 
   .submit-button:hover {
     transform: translateY(-1px);
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
   }
 
   .submit-button:disabled {
@@ -355,7 +367,7 @@
   .toggle-button {
     background: none;
     border: none;
-    color: #667eea;
+    color: #1e3a8a;
     font-weight: 600;
     cursor: pointer;
     padding: 0;
@@ -364,6 +376,7 @@
 
   .toggle-button:hover {
     text-decoration: underline;
+    color: #3b82f6;
   }
 
   .spinner {
@@ -371,7 +384,7 @@
     width: 20px;
     height: 20px;
     border: 2px solid #f3f3f3;
-    border-top: 2px solid #667eea;
+    border-top: 2px solid #3b82f6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }

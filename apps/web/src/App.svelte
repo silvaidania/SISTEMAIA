@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import { api, setSession, getStoredUser, getToken, clearSession } from './lib/api.js';
   import { supabase } from './lib/supabase.js';
+  import Home from './components/Home.svelte';
   import Auth from './components/Auth.svelte';
   import DocumentList from './components/DocumentList.svelte';
   import DocumentForm from './components/DocumentForm.svelte';
@@ -30,12 +31,21 @@
   let reviewers = [];
   let students = [];
   let searchFilters = '';
+  let showHome = true;
+  let showAuth = false;
 
   async function handleLogin(event) {
     const { user: profile, token } = event.detail;
     setSession(token, profile);
     user = profile;
+    showHome = false;
+    showAuth = false;
     await loadAll();
+  }
+
+  function goToLogin() {
+    showHome = false;
+    showAuth = true;
   }
 
   async function handleLogout() {
@@ -265,16 +275,20 @@
 </script>
 
 {#if !user}
-  <main class="app-shell">
-    <section class="card">
-      <div class="brand">
-        <h1>Sistema IA</h1>
-        <p>Administración de estadías estudiantiles</p>
-      </div>
+  {#if showHome}
+    <Home on:login={goToLogin} />
+  {:else if showAuth}
+    <main class="app-shell">
+      <section class="card">
+        <div class="brand">
+          <h1>Sistema IA</h1>
+          <p>Administración de estadías estudiantiles</p>
+        </div>
 
-  <Auth on:login={handleLogin} />
-    </section>
-  </main>
+        <Auth on:login={handleLogin} />
+      </section>
+    </main>
+  {/if}
 {:else}
   <main class="dashboard">
     <header>
