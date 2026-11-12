@@ -1,0 +1,19 @@
+{
+  "name": "sistemaia-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "backend"
+  ],
+  "scripts": {
+    "dev:web": "npm --workspace apps/web run dev",
+    "dev:api": "npm --workspace backend run dev",
+    "build": "npm --workspace apps/web run build && npm --workspace backend run build",
+    "lint": "npm --workspace apps/web run lint",
+    "check": "npm --workspace apps/web run check"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
