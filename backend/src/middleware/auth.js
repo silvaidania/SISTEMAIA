@@ -1,7 +1,7 @@
 import { verifyToken } from '../utils/security.js';
 import { supabase } from '../config/supabase.js';
 
-export function requireAuth(req, res, next) {
+export async function requireAuth(req, res, next) {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
 
@@ -10,11 +10,39 @@ export function requireAuth(req, res, next) {
   }
 
   try {
-    const decoded = verifyToken(token);
-    req.user = decoded;
-    next();
-  } catch {
-    return res.status(401).json({ message: 'Token inválido o expirado' });
+    // Intentar verificar con JWT propio primero (compatibilidad)
+    try {
+      const decoded = verifyToken(token);
+      req.user = decoded;
+      return next();
+    } catch {
+      // Si falla, intentar con Supabase Auth
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      
+      if (error || !user) {
+        return res.status(401).json({ message: 'Token inválido o expirado' });
+      }
+
+      // Obtener el perfil del usuario
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError || !profile) {
+        return res.status(401).json({ message: 'Perfil de usuario no encontrado' });
+      }
+
+      req.user = {
+        userId: user.id,
+        email: user.email,
+        role: profile.role
+      };
+      next();
+    }
+  } catch (error) {
+    return res.status(401).json({ message: 'Error de autenticación' });
   }
 }
 

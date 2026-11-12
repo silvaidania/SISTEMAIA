@@ -10,6 +10,7 @@ import notificationRoutes from './notifications.js';
 import userRoutes from './users.js';
 import universityRoutes from './universities.js';
 import academicPeriodManagementRoutes from './academicPeriodsManagement.js';
+import profileRoutes from './profile.js';
 
 const router = express.Router();
 
@@ -26,6 +27,7 @@ router.use('/notifications', notificationRoutes);
 router.use('/users', userRoutes);
 router.use('/universities', universityRoutes);
 router.use('/academic-periods-management', academicPeriodManagementRoutes);
+router.use('/profile', profileRoutes);
 
 export function createApiRouter() {
   return router;

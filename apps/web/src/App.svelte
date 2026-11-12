@@ -2,6 +2,8 @@
   import './app.css';
   import { onMount } from 'svelte';
   import { api, setSession, getStoredUser, getToken, clearSession } from './lib/api.js';
+  import { supabase } from './lib/supabase.js';
+  import Auth from './components/Auth.svelte';
   import DocumentList from './components/DocumentList.svelte';
   import DocumentForm from './components/DocumentForm.svelte';
   import DocumentDetail from './components/DocumentDetail.svelte';
@@ -13,8 +15,6 @@
   import FilePreview from './components/FilePreview.svelte';
   import SystemConfig from './components/SystemConfig.svelte';
 
-  let email = '';
-  let password = '';
   let user = null;
   let loading = false;
   let error = '';
@@ -31,25 +31,20 @@
   let students = [];
   let searchFilters = '';
 
-  async function login() {
-    error = '';
-    success = '';
-    loading = true;
+  async function handleLogin(event) {
+    const { user: profile, token } = event.detail;
+    setSession(token, profile);
+    user = profile;
+    await loadAll();
+  }
 
-    try {
-      const data = await api('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password })
-      });
-
-      setSession(data.token, data.user);
-      user = data.user;
-      await loadAll();
-    } catch (err) {
-      error = err.message;
-    } finally {
-      loading = false;
-    }
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    clearSession();
+    user = null;
+    documents = [];
+    periods = [];
+    balance = [];
   }
 
   async function loadAll() {
@@ -233,25 +228,39 @@
     }
   }
 
-  function logout() {
-    clearSession();
-    user = null;
-    documents = [];
-    periods = [];
-    balance = [];
-    selectedDocument = null;
-    email = '';
-    password = '';
-    error = '';
-    success = '';
+  async function logout() {
+    await handleLogout();
   }
 
   onMount(() => {
-    const stored = getStoredUser();
-    if (stored && getToken()) {
-      user = stored;
-      loadAll();
-    }
+    // Escuchar cambios de autenticación de Supabase
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session) {
+        // Usuario autenticado
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profile) {
+          setSession(session.access_token, profile);
+          user = profile;
+          await loadAll();
+        }
+      } else {
+        // Usuario no autenticado
+        clearSession();
+        user = null;
+      }
+    });
+
+    // Verificar sesión existente
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        supabase.auth.onAuthStateChange(null, session);
+      }
+    });
   });
 </script>
 
@@ -263,21 +272,7 @@
         <p>Administración de estadías estudiantiles</p>
       </div>
 
-      <form on:submit|preventDefault={login}>
-        <label for="email">Correo institucional</label>
-        <input id="email" type="email" bind:value={email} required autocomplete="username" />
-
-        <label for="password">Contraseña</label>
-        <input id="password" type="password" bind:value={password} required autocomplete="current-password" />
-
-        {#if error}
-          <p class="error">{error}</p>
-        {/if}
-
-        <button type="submit" disabled={loading}>
-          {loading ? 'Entrando...' : 'Iniciar sesión'}
-        </button>
-      </form>
+  <Auth on:login={handleLogin} />
     </section>
   </main>
 {:else}
