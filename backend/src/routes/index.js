@@ -3,6 +3,8 @@ import cors from 'cors';
 import { env } from '../config/env.js';
 import authRoutes from './auth.js';
 import loadBalanceRoutes from './loadBalance.js';
+import documentRoutes from './documents.js';
+import academicPeriodRoutes from './academicPeriods.js';
 
 const router = express.Router();
 
@@ -12,6 +14,8 @@ router.get('/health', (_req, res) => {
 
 router.use('/auth', authRoutes);
 router.use('/load-balance', loadBalanceRoutes);
+router.use('/documents', documentRoutes);
+router.use('/academic-periods', academicPeriodRoutes);
 
 export function createApiRouter() {
   return router;

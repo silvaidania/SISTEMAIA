@@ -1,19 +1,20 @@
 # Sistema IA - Universidades Tecnológicas
 
-Monorepo base para administración de documentos de estadías estudiantiles.
+Monorepo para administración de documentos de estadías estudiantiles.
 
 ## Stack
 
 - Frontend: Svelte + Vite
 - Backend: Node.js + Express
 - Base de datos: Supabase
+- Almacenamiento: Supabase Storage
 - Despliegue: Vercel
 
 ## Estructura
 
 - `apps/web`: frontend Svelte
 - `backend`: API Node/Express
-- `supabase/migrations`: esquema SQL inicial
+- `supabase/migrations`: esquema SQL
 
 ## Requisitos
 
@@ -38,13 +39,13 @@ Nunca subas `.env` al repositorio.
 
 ## Base de datos
 
-Aplica la migración inicial en Supabase:
+Aplica las migraciones en Supabase:
 
 ```bash
 supabase db push
 ```
 
-Si no usas Supabase CLI, pega el contenido de `supabase/migrations/20261112000000_init.sql` en el SQL Editor de Supabase.
+Si no usas Supabase CLI, pega el contenido de los archivos en `supabase/migrations/` en el SQL Editor de Supabase, en orden.
 
 ## Desarrollo local
 
@@ -77,6 +78,16 @@ Puedes personalizarlo con:
 - `SEED_ADMIN_PASSWORD`
 - `SEED_ADMIN_NAME`
 
+## Flujo de documentos
+
+1. El estudiante sube un documento desde la pestaña **Enviar**.
+2. El backend guarda el archivo en Supabase Storage.
+3. El sistema asigna automáticamente un revisor según el balance de cargas.
+4. El revisor puede agregar observaciones o aprobar/rechazar el documento.
+5. Si hay observaciones, el estudiante puede enviar una corrección.
+6. El documento corregido vuelve a revisión.
+7. La aprobación final marca el documento como `approved`.
+
 ## Seguridad implementada
 
 - Contraseñas hasheadas con `bcryptjs`
@@ -85,6 +96,7 @@ Puedes personalizarlo con:
 - Row Level Security en Supabase
 - Validación de roles en backend
 - Balance de cargas para asignación de revisores
+- Archivos privados en Supabase Storage
 
 ## Vercel
 

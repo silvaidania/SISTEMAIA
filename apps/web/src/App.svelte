@@ -2,16 +2,25 @@
   import './app.css';
   import { onMount } from 'svelte';
   import { api, setSession, getStoredUser, getToken, clearSession } from './lib/api.js';
+  import DocumentList from './components/DocumentList.svelte';
+  import DocumentForm from './components/DocumentForm.svelte';
+  import DocumentDetail from './components/DocumentDetail.svelte';
 
   let email = '';
   let password = '';
   let user = null;
   let loading = false;
   let error = '';
+  let success = '';
+  let activeTab = 'documents';
+  let documents = [];
+  let periods = [];
   let balance = [];
+  let selectedDocument = null;
 
   async function login() {
     error = '';
+    success = '';
     loading = true;
 
     try {
@@ -22,11 +31,33 @@
 
       setSession(data.token, data.user);
       user = data.user;
-      await loadBalance();
+      await loadAll();
     } catch (err) {
       error = err.message;
     } finally {
       loading = false;
+    }
+  }
+
+  async function loadAll() {
+    await Promise.all([loadDocuments(), loadPeriods(), loadBalance()]);
+  }
+
+  async function loadDocuments() {
+    try {
+      const data = await api('/documents');
+      documents = data.documents || [];
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
+  async function loadPeriods() {
+    try {
+      const data = await api('/academic-periods');
+      periods = data.periods || [];
+    } catch {
+      periods = [];
     }
   }
 
@@ -39,19 +70,124 @@
     }
   }
 
+  async function selectDocument(id) {
+    try {
+      const data = await api(`/documents/${id}`);
+      selectedDocument = data.document;
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
+  async function submitDocument(event) {
+    error = '';
+    success = '';
+    try {
+      const { title, documentType, academicPeriodId, file } = event.detail;
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('documentType', documentType);
+      formData.append('academicPeriodId', academicPeriodId);
+      if (file && file.length > 0) {
+        formData.append('file', file[0]);
+      }
+
+      await api('/documents/upload', {
+        method: 'POST',
+        body: formData
+      });
+      success = 'Documento enviado correctamente';
+      await loadDocuments();
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
+  async function addObservation(event) {
+    if (!selectedDocument) return;
+    error = '';
+    try {
+      await api(`/documents/${selectedDocument.id}/observations`, {
+        method: 'POST',
+        body: JSON.stringify(event.detail)
+      });
+      success = 'Observación agregada';
+      await selectDocument(selectedDocument.id);
+      await loadDocuments();
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
+  async function submitDecision(event) {
+    if (!selectedDocument) return;
+    error = '';
+    try {
+      await api(`/documents/${selectedDocument.id}/decision`, {
+        method: 'POST',
+        body: JSON.stringify(event.detail)
+      });
+      success = 'Decisión registrada';
+      await selectDocument(selectedDocument.id);
+      await loadDocuments();
+      await loadBalance();
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
+  async function submitCorrection(event) {
+    if (!selectedDocument) return;
+    error = '';
+    try {
+      await api(`/documents/${selectedDocument.id}/correction`, {
+        method: 'POST',
+        body: JSON.stringify(event.detail)
+      });
+      success = 'Corrección enviada';
+      await selectDocument(selectedDocument.id);
+      await loadDocuments();
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
+  async function assignAuto(id) {
+    error = '';
+    try {
+      await api(`/documents/${id}/assign`, {
+        method: 'POST',
+        body: JSON.stringify({ auto: true })
+      });
+      success = 'Revisor asignado automáticamente';
+      await loadDocuments();
+      await loadBalance();
+      if (selectedDocument?.id === id) {
+        await selectDocument(id);
+      }
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
   function logout() {
     clearSession();
     user = null;
+    documents = [];
+    periods = [];
     balance = [];
+    selectedDocument = null;
     email = '';
     password = '';
+    error = '';
+    success = '';
   }
 
   onMount(() => {
     const stored = getStoredUser();
     if (stored && getToken()) {
       user = stored;
-      loadBalance();
+      loadAll();
     }
   });
 </script>
@@ -88,29 +224,87 @@
         <h1>Panel de control</h1>
         <p class="muted">{user.full_name} · {user.role}</p>
       </div>
-      <button type="button" on:click={logout}>Cerrar sesión</button>
+      <button type="button" class="secondary" on:click={logout}>Cerrar sesión</button>
     </header>
 
-    <section class="grid">
-      <article class="panel">
-        <h2>Resumen</h2>
-        <p class="muted">Base funcional mínima lista para continuar con módulos de documentos, revisores y observaciones.</p>
-      </article>
+    <nav class="tabs">
+      <button type="button" class="tab" class:active={activeTab === 'documents'} on:click={() => (activeTab = 'documents')}>
+        Documentos
+      </button>
+      {#if ['admin', 'coordinator', 'reviewer'].includes(user.role)}
+        <button type="button" class="tab" class:active={activeTab === 'balance'} on:click={() => (activeTab = 'balance')}>
+          Balance
+        </button>
+      {/if}
+      {#if user.role === 'student'}
+        <button type="button" class="tab" class:active={activeTab === 'submit'} on:click={() => (activeTab = 'submit')}>
+          Enviar
+        </button>
+      {/if}
+    </nav>
 
-      <article class="panel">
-        <h2>Balance de cargas</h2>
-        {#if balance.length === 0}
-          <p class="muted">No hay revisores con balance cargado todavía.</p>
-        {:else}
-          <ul>
-            {#each balance as row}
-              <li>
-                {row.full_name}: {row.pending_documents ?? 0} pendientes · capacidad {row.reviewer_capacity ?? 0}
-              </li>
-            {/each}
-          </ul>
+    {#if error}
+      <p class="error">{error}</p>
+    {/if}
+    {#if success}
+      <p class="success">{success}</p>
+    {/if}
+
+    {#if activeTab === 'documents'}
+      <section class="grid">
+        <article class="panel" style="grid-column: 1 / -1;">
+          <h2>Documentos</h2>
+          <DocumentList documents={documents} onSelect={selectDocument} />
+        </article>
+
+        {#if selectedDocument}
+          <article class="panel" style="grid-column: 1 / -1;">
+            <DocumentDetail
+              document={selectedDocument}
+              role={user.role}
+              on:add-observation={addObservation}
+              on:decision={submitDecision}
+              on:correction={submitCorrection}
+            />
+            {#if ['admin', 'coordinator'].includes(user.role) && !selectedDocument.reviewer_id}
+              <div class="actions">
+                <button type="button" on:click={() => assignAuto(selectedDocument.id)}>Asignar revisor automático</button>
+              </div>
+            {/if}
+          </article>
         {/if}
-      </article>
-    </section>
+      </section>
+    {/if}
+
+    {#if activeTab === 'balance'}
+      <section class="grid">
+        <article class="panel">
+          <h2>Balance de cargas</h2>
+          {#if balance.length === 0}
+            <p class="muted">No hay revisores con balance cargado todavía.</p>
+          {:else}
+            <div class="list">
+              {#each balance as row}
+                <div class="list-item">
+                  <strong>{row.full_name}</strong>
+                  <p class="muted">
+                    {row.pending_documents ?? 0} pendientes · capacidad {row.reviewer_capacity ?? 0} · disponibles {row.available_capacity ?? 0}
+                  </p>
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </article>
+      </section>
+    {/if}
+
+    {#if activeTab === 'submit'}
+      <section class="grid">
+        <article class="panel" style="grid-column: 1 / -1;">
+          <h2>Enviar documento</h2>
+          <DocumentForm periods={periods} on:submit={submitDocument} />
+        </article>
+      </section>
+    {/if}
   </main>
 {/if}
