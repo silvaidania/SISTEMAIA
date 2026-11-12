@@ -7,6 +7,7 @@ import documentRoutes from './documents.js';
 import academicPeriodRoutes from './academicPeriods.js';
 import reportRoutes from './reports.js';
 import notificationRoutes from './notifications.js';
+import userRoutes from './users.js';
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.use('/documents', documentRoutes);
 router.use('/academic-periods', academicPeriodRoutes);
 router.use('/reports', reportRoutes);
 router.use('/notifications', notificationRoutes);
+router.use('/users', userRoutes);
 
 export function createApiRouter() {
   return router;

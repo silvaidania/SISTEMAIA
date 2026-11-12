@@ -7,6 +7,7 @@
   import DocumentDetail from './components/DocumentDetail.svelte';
   import Reports from './components/Reports.svelte';
   import Notifications from './components/Notifications.svelte';
+  import Users from './components/Users.svelte';
 
   let email = '';
   let password = '';
@@ -247,6 +248,11 @@
           Reportes
         </button>
       {/if}
+      {#if user.role === 'admin'}
+        <button type="button" class="tab" class:active={activeTab === 'users'} on:click={() => (activeTab = 'users')}>
+          Usuarios
+        </button>
+      {/if}
       {#if user.role === 'student'}
         <button type="button" class="tab" class:active={activeTab === 'submit'} on:click={() => (activeTab = 'submit')}>
           Enviar
@@ -311,6 +317,10 @@
 
     {#if activeTab === 'reports'}
       <Reports user={user} />
+    {/if}
+
+    {#if activeTab === 'users'}
+      <Users user={user} />
     {/if}
 
     {#if activeTab === 'submit'}

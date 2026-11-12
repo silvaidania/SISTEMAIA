@@ -125,6 +125,27 @@ El sistema envía notificaciones automáticas cuando un documento cambia de esta
 - Clic en notificación navega al documento correspondiente
 - Notificaciones en tiempo real para cambios de estado
 
+## Gestión de usuarios
+
+Los usuarios con rol `admin` tienen acceso a la pestaña **Usuarios** para gestionar el sistema.
+
+### Funcionalidades
+
+- **Crear usuarios**: registrar nuevos usuarios con roles (admin, coordinator, reviewer, student).
+- **Datos de estudiante**: al crear un estudiante, se registran código, carrera, semestre y universidad.
+- **Editar usuarios**: modificar nombre, rol, estado activo y capacidad de revisión.
+- **Eliminar usuarios**: eliminar usuarios del sistema (elimina también el usuario de autenticación).
+- **Restablecer contraseña**: generar una nueva contraseña para cualquier usuario.
+- **Filtrar usuarios**: por rol, estado activo/inactivo y búsqueda por email o nombre.
+- **Ver información**: email, rol, estado, datos de estudiante (si aplica) y carga de trabajo para revisores.
+
+### Roles disponibles
+
+- **admin**: acceso completo al sistema, gestión de usuarios, reportes y configuración.
+- **coordinator**: acceso a documentos, reportes y balance de cargas.
+- **reviewer**: acceso a documentos asignados, observaciones y balance de cargas.
+- **student**: acceso a envío de documentos y visualización de sus propios documentos.
+
 ## Seguridad implementada
 
 - Contraseñas hasheadas con `bcryptjs`
