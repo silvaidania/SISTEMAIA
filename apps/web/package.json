@@ -14,6 +14,8 @@
     "@supabase/supabase-js": "^2.119.0",
     "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "chart.js": "^4.6.1",
+    "leaflet": "^1.9.4",
+    "leaflet-draw": "^1.0.4",
     "svelte": "^4.2.18",
     "vite": "^5.4.8"
   },

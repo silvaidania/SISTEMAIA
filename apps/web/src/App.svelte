@@ -15,6 +15,7 @@
   import Dashboard from './components/Dashboard.svelte';
   import FilePreview from './components/FilePreview.svelte';
   import SystemConfig from './components/SystemConfig.svelte';
+  import GeofenceMap from './components/GeofenceMap.svelte';
 
   let user = null;
   let loading = false;
@@ -33,6 +34,7 @@
   let searchFilters = '';
   let showHome = true;
   let showAuth = false;
+  let authMode = 'login';
 
   async function handleLogin(event) {
     const { user: profile, token } = event.detail;
@@ -46,6 +48,13 @@
   function goToLogin() {
     showHome = false;
     showAuth = true;
+    authMode = 'login';
+  }
+
+  function goToRegister() {
+    showHome = false;
+    showAuth = true;
+    authMode = 'signup';
   }
 
   async function handleLogout() {
@@ -276,7 +285,7 @@
 
 {#if !user}
   {#if showHome}
-    <Home on:login={goToLogin} />
+    <Home on:login={goToLogin} on:register={goToRegister} />
   {:else if showAuth}
     <main class="app-shell">
       <section class="card">
@@ -285,7 +294,7 @@
           <p>Administración de estadías estudiantiles</p>
         </div>
 
-        <Auth on:login={handleLogin} />
+        <Auth on:login={handleLogin} initialMode={authMode} />
       </section>
     </main>
   {/if}
@@ -319,6 +328,9 @@
       {#if ['admin', 'coordinator'].includes(user.role)}
         <button type="button" class="tab" class:active={activeTab === 'reports'} on:click={() => (activeTab = 'reports')}>
           Reportes
+        </button>
+        <button type="button" class="tab" class:active={activeTab === 'geofences'} on:click={() => (activeTab = 'geofences')}>
+          Geocercas
         </button>
       {/if}
       {#if user.role === 'admin'}
@@ -408,6 +420,14 @@
 
     {#if activeTab === 'reports'}
       <Reports user={user} />
+    {/if}
+
+    {#if activeTab === 'geofences'}
+      <section class="grid">
+        <article class="panel" style="grid-column: 1 / -1; height: 80vh;">
+          <GeofenceMap />
+        </article>
+      </section>
     {/if}
 
     {#if activeTab === 'users'}

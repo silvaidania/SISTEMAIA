@@ -6,6 +6,10 @@
   function goToLogin() {
     dispatch('login');
   }
+
+  function goToRegister() {
+    dispatch('register');
+  }
 </script>
 
 <div class="home-container">
@@ -53,9 +57,14 @@
     </div>
 
     <div class="cta-section">
-      <button type="button" class="cta-button" on:click={goToLogin}>
-        Acceder al Sistema
-      </button>
+      <div class="cta-buttons">
+        <button type="button" class="cta-button primary" on:click={goToLogin}>
+          Iniciar Sesión
+        </button>
+        <button type="button" class="cta-button secondary" on:click={goToRegister}>
+          Registrarse
+        </button>
+      </div>
       
       <p class="cta-text">
         ¿No tienes cuenta? Regístrate para comenzar a gestionar tus documentos de estadías.
@@ -63,7 +72,7 @@
     </div>
 
     <div class="footer-section">
-      <p>© 2024 Universidad Tecnológica de Ciudad Juárez. Todos los derechos reservados.</p>
+      <p>© 2026 Idania Silva Ibarra. Todos los derechos reservados.</p>
       <p class="version">Versión 1.0.0</p>
     </div>
   </div>
@@ -72,7 +81,7 @@
 <style>
   .home-container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #f97316 100%);
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -104,7 +113,7 @@
     justify-content: center;
     margin: 0 auto;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    border: 4px solid #f97316;
+    border: 4px solid #60a5fa;
   }
 
   .logo-text {
@@ -156,6 +165,7 @@
   .feature-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.15);
   }
 
   .feature-icon {
@@ -180,25 +190,46 @@
     margin-bottom: 4rem;
   }
 
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
   .cta-button {
-    background: white;
-    color: #1e3a8a;
-    border: none;
     padding: 1rem 2.5rem;
     font-size: 1.125rem;
     font-weight: 600;
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    margin-bottom: 1rem;
+    border: none;
   }
 
-  .cta-button:hover {
+  .cta-button.primary {
+    background: white;
+    color: #1e3a8a;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .cta-button.primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    background: #f97316;
+    background: #60a5fa;
     color: white;
+  }
+
+  .cta-button.secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+  }
+
+  .cta-button.secondary:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .cta-text {

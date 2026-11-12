@@ -12,6 +12,14 @@
   let error = '';
   let success = '';
 
+  export let initialMode = 'login'; // 'login' o 'signup'
+
+  $: if (initialMode === 'signup') {
+    isSignUp = true;
+  } else {
+    isSignUp = false;
+  }
+
   async function signInWithGoogle() {
     error = '';
     success = '';
