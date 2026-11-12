@@ -5,6 +5,7 @@
   import DocumentList from './components/DocumentList.svelte';
   import DocumentForm from './components/DocumentForm.svelte';
   import DocumentDetail from './components/DocumentDetail.svelte';
+  import Reports from './components/Reports.svelte';
 
   let email = '';
   let password = '';
@@ -236,6 +237,11 @@
           Balance
         </button>
       {/if}
+      {#if ['admin', 'coordinator'].includes(user.role)}
+        <button type="button" class="tab" class:active={activeTab === 'reports'} on:click={() => (activeTab = 'reports')}>
+          Reportes
+        </button>
+      {/if}
       {#if user.role === 'student'}
         <button type="button" class="tab" class:active={activeTab === 'submit'} on:click={() => (activeTab = 'submit')}>
           Enviar
@@ -296,6 +302,10 @@
           {/if}
         </article>
       </section>
+    {/if}
+
+    {#if activeTab === 'reports'}
+      <Reports user={user} />
     {/if}
 
     {#if activeTab === 'submit'}

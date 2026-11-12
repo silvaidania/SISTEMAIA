@@ -5,6 +5,7 @@ import authRoutes from './auth.js';
 import loadBalanceRoutes from './loadBalance.js';
 import documentRoutes from './documents.js';
 import academicPeriodRoutes from './academicPeriods.js';
+import reportRoutes from './reports.js';
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ router.use('/auth', authRoutes);
 router.use('/load-balance', loadBalanceRoutes);
 router.use('/documents', documentRoutes);
 router.use('/academic-periods', academicPeriodRoutes);
+router.use('/reports', reportRoutes);
 
 export function createApiRouter() {
   return router;

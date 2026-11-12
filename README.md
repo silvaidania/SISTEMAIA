@@ -88,6 +88,21 @@ Puedes personalizarlo con:
 6. El documento corregido vuelve a revisión.
 7. La aprobación final marca el documento como `approved`.
 
+## Reportes y métricas
+
+Los usuarios con rol `admin` o `coordinator` tienen acceso a la pestaña **Reportes** con las siguientes vistas:
+
+- **Métricas del sistema**: totales de documentos por estado, usuarios y observaciones.
+- **Documentos por estado**: distribución de documentos según su estado actual.
+- **Documentos por universidad**: cantidad de documentos por institución.
+- **Documentos por periodo**: cantidad de documentos por periodo académico.
+- **Rendimiento de revisores**: carga, documentos completados, tasa de aprobación y tiempo promedio de revisión.
+- **Progreso de estudiantes**: documentos totales, aprobados, en progreso y tasa de completado.
+- **Resumen de observaciones**: observaciones por severidad y estado, más las más recientes.
+- **Reporte académico**: listado detallado de documentos con información del estudiante, revisor y periodo.
+
+Los reportes de revisores, estudiantes y académico se pueden exportar a CSV.
+
 ## Seguridad implementada
 
 - Contraseñas hasheadas con `bcryptjs`
