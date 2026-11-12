@@ -5,6 +5,7 @@
   import DocumentList from './components/DocumentList.svelte';
   import DocumentForm from './components/DocumentForm.svelte';
   import DocumentDetail from './components/DocumentDetail.svelte';
+  import DocumentSearch from './components/DocumentSearch.svelte';
   import Reports from './components/Reports.svelte';
   import Notifications from './components/Notifications.svelte';
   import Users from './components/Users.svelte';
@@ -25,6 +26,10 @@
   let selectedDocument = null;
   let showFilePreview = false;
   let previewStoragePath = '';
+  let universities = [];
+  let reviewers = [];
+  let students = [];
+  let searchFilters = '';
 
   async function login() {
     error = '';
@@ -48,12 +53,13 @@
   }
 
   async function loadAll() {
-    await Promise.all([loadDocuments(), loadPeriods(), loadBalance()]);
+    await Promise.all([loadDocuments(), loadPeriods(), loadBalance(), loadUniversities(), loadReviewers(), loadStudents()]);
   }
 
   async function loadDocuments() {
     try {
-      const data = await api('/documents');
+      const url = searchFilters ? `/documents?${searchFilters}` : '/documents';
+      const data = await api(url);
       documents = data.documents || [];
     } catch (err) {
       error = err.message;
@@ -76,6 +82,44 @@
     } catch {
       balance = [];
     }
+  }
+
+  async function loadUniversities() {
+    try {
+      const data = await api('/universities');
+      universities = data.universities || [];
+    } catch {
+      universities = [];
+    }
+  }
+
+  async function loadReviewers() {
+    try {
+      const data = await api('/load-balance/reviewers');
+      reviewers = data.reviewers || [];
+    } catch {
+      reviewers = [];
+    }
+  }
+
+  async function loadStudents() {
+    try {
+      if (user.role === 'admin' || user.role === 'coordinator') {
+        const data = await api('/users?role=student');
+        students = (data.users || []).map(u => ({
+          id: u.student?.id,
+          full_name: u.full_name,
+          student_code: u.student?.student_code
+        })).filter(s => s.id);
+      }
+    } catch {
+      students = [];
+    }
+  }
+
+  async function handleSearch(event) {
+    searchFilters = event.detail.params;
+    await loadDocuments();
   }
 
   async function selectDocument(id) {
@@ -292,6 +336,16 @@
 
     {#if activeTab === 'documents'}
       <section class="grid">
+        <article class="panel" style="grid-column: 1 / -1;">
+          <DocumentSearch
+            {universities}
+            {periods}
+            {reviewers}
+            {students}
+            on:search={handleSearch}
+          />
+        </article>
+
         <article class="panel" style="grid-column: 1 / -1;">
           <h2>Documentos</h2>
           <DocumentList documents={documents} onSelect={selectDocument} />

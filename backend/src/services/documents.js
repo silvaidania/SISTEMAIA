@@ -1,7 +1,21 @@
 import { supabase } from '../config/supabase.js';
 import { notifyDocumentStatusChange } from './notifications.js';
 
-export async function listDocuments({ userId, role, status, search }) {
+export async function listDocuments({
+  userId,
+  role,
+  status,
+  search,
+  documentType,
+  universityId,
+  periodId,
+  studentId,
+  reviewerId,
+  dateFrom,
+  dateTo,
+  hasObservations,
+  isApproved
+}) {
   let query = supabase
     .from('documents')
     .select(`
@@ -21,16 +35,52 @@ export async function listDocuments({ userId, role, status, search }) {
         student_code,
         career,
         semester,
-        university:universities(name, short_name),
+        university:universities(id, name, short_name),
         profile:profiles(id, full_name, email)
       ),
       reviewer:profiles!documents_reviewer_id_fkey(full_name, email),
-      academic_period:academic_periods(name)
+      academic_period:academic_periods(id, name)
     `)
     .order('submitted_at', { ascending: false });
 
   if (status) {
     query = query.eq('status', status);
+  }
+
+  if (documentType) {
+    query = query.ilike('document_type', `%${documentType}%`);
+  }
+
+  if (universityId) {
+    query = query.eq('student.university_id', universityId);
+  }
+
+  if (periodId) {
+    query = query.eq('academic_period_id', periodId);
+  }
+
+  if (studentId) {
+    query = query.eq('student_id', studentId);
+  }
+
+  if (reviewerId) {
+    query = query.eq('reviewer_id', reviewerId);
+  }
+
+  if (dateFrom) {
+    query = query.gte('submitted_at', dateFrom);
+  }
+
+  if (dateTo) {
+    query = query.lte('submitted_at', dateTo);
+  }
+
+  if (hasObservations === 'true') {
+    query = query.eq('status', 'observed');
+  }
+
+  if (isApproved === 'true') {
+    query = query.eq('status', 'approved');
   }
 
   if (search) {

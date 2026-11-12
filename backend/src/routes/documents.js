@@ -13,12 +13,34 @@ const router = Router();
 
 router.get('/', requireAuth, async (req, res, next) => {
   try {
-    const { status, search } = req.query;
+    const {
+      status,
+      search,
+      documentType,
+      universityId,
+      periodId,
+      studentId,
+      reviewerId,
+      dateFrom,
+      dateTo,
+      hasObservations,
+      isApproved
+    } = req.query;
+
     const documents = await listDocuments({
       userId: req.user.userId,
       role: req.user.role,
       status,
-      search
+      search,
+      documentType,
+      universityId,
+      periodId,
+      studentId,
+      reviewerId,
+      dateFrom,
+      dateTo,
+      hasObservations,
+      isApproved
     });
     return res.json({ documents });
   } catch (error) {
