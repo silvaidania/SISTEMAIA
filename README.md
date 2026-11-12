@@ -146,6 +146,26 @@ Los usuarios con rol `admin` tienen acceso a la pestaña **Usuarios** para gesti
 - **reviewer**: acceso a documentos asignados, observaciones y balance de cargas.
 - **student**: acceso a envío de documentos y visualización de sus propios documentos.
 
+## Dashboard con gráficos
+
+Los usuarios con rol `admin` o `coordinator` tienen acceso a la pestaña **Dashboard** con visualizaciones interactivas de métricas del sistema.
+
+### Gráficos disponibles
+
+- **Documentos por estado**: gráfico de dona que muestra la distribución de documentos según su estado actual (enviado, en revisión, observado, corregido, aprobado, rechazado).
+- **Documentos por universidad**: gráfico de barras que muestra la cantidad de documentos por institución.
+- **Documentos por periodo**: gráfico de líneas que muestra la evolución de documentos por periodo académico.
+- **Rendimiento de revisores**: gráfico de barras agrupadas que compara documentos completados y pendientes por revisor.
+- **Progreso de estudiantes**: gráfico de barras agrupadas que muestra documentos aprobados y en progreso por estudiante.
+
+### Características
+
+- Gráficos interactivos con Chart.js
+- Diseño responsive optimizado para celular
+- Botón de actualización manual de datos
+- Colores intuitivos para cada estado de documento
+- Leyendas y tooltips informativos
+
 ## Seguridad implementada
 
 - Contraseñas hasheadas con `bcryptjs`

@@ -377,6 +377,33 @@ button:disabled {
   margin-top: 0.25rem;
 }
 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.chart-panel {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.chart-panel h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #374151;
+}
+
+.chart-container {
+  position: relative;
+  height: 250px;
+  width: 100%;
+}
+
 @media (max-width: 640px) {
   .dashboard header {
     flex-direction: column;
@@ -390,5 +417,13 @@ button:disabled {
   .notification-dropdown {
     width: calc(100vw - 2rem);
     right: -1rem;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-container {
+    height: 200px;
   }
 }

@@ -8,6 +8,7 @@
   import Reports from './components/Reports.svelte';
   import Notifications from './components/Notifications.svelte';
   import Users from './components/Users.svelte';
+  import Dashboard from './components/Dashboard.svelte';
 
   let email = '';
   let password = '';
@@ -238,6 +239,11 @@
       <button type="button" class="tab" class:active={activeTab === 'documents'} on:click={() => (activeTab = 'documents')}>
         Documentos
       </button>
+      {#if ['admin', 'coordinator'].includes(user.role)}
+        <button type="button" class="tab" class:active={activeTab === 'dashboard'} on:click={() => (activeTab = 'dashboard')}>
+          Dashboard
+        </button>
+      {/if}
       {#if ['admin', 'coordinator', 'reviewer'].includes(user.role)}
         <button type="button" class="tab" class:active={activeTab === 'balance'} on:click={() => (activeTab = 'balance')}>
           Balance
@@ -313,6 +319,10 @@
           {/if}
         </article>
       </section>
+    {/if}
+
+    {#if activeTab === 'dashboard'}
+      <Dashboard user={user} />
     {/if}
 
     {#if activeTab === 'reports'}
