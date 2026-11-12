@@ -8,6 +8,8 @@ import academicPeriodRoutes from './academicPeriods.js';
 import reportRoutes from './reports.js';
 import notificationRoutes from './notifications.js';
 import userRoutes from './users.js';
+import universityRoutes from './universities.js';
+import academicPeriodManagementRoutes from './academicPeriodsManagement.js';
 
 const router = express.Router();
 
@@ -22,6 +24,8 @@ router.use('/academic-periods', academicPeriodRoutes);
 router.use('/reports', reportRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/users', userRoutes);
+router.use('/universities', universityRoutes);
+router.use('/academic-periods-management', academicPeriodManagementRoutes);
 
 export function createApiRouter() {
   return router;

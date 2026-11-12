@@ -218,6 +218,31 @@ Los emails incluyen:
 - Documento aprobado
 - Documento rechazado
 
+## Configuración del sistema
+
+Los usuarios con rol `admin` tienen acceso a la pestaña **Configuración** para gestionar universidades y periodos académicos.
+
+### Universidades
+
+- **Crear universidades**: registrar nuevas instituciones con nombre completo y nombre corto.
+- **Editar universidades**: modificar nombre y nombre corto.
+- **Activar/Desactivar**: controlar si una universidad está disponible en el sistema.
+- **Eliminar universidades**: eliminar universidades que ya no se utilicen.
+- **Buscar**: filtrar universidades por nombre o nombre corto.
+
+### Periodos académicos
+
+- **Crear periodos**: registrar nuevos periodos con universidad, nombre, fecha de inicio y fecha de fin.
+- **Editar periodos**: modificar universidad, nombre y fechas.
+- **Activar/Desactivar**: controlar si un periodo está disponible para envío de documentos.
+- **Eliminar periodos**: eliminar periodos que ya no se utilicen.
+- **Filtrar por universidad**: ver periodos específicos de una universidad.
+
+### Uso en el sistema
+
+- Los periodos académicos activos se muestran en el formulario de envío de documentos para que los estudiantes seleccionen el periodo correspondiente.
+- Las universidades activas se utilizan en los reportes y estadísticas del sistema.
+
 ## Seguridad implementada
 
 - Contraseñas hasheadas con `bcryptjs`

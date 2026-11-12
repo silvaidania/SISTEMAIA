@@ -10,6 +10,7 @@
   import Users from './components/Users.svelte';
   import Dashboard from './components/Dashboard.svelte';
   import FilePreview from './components/FilePreview.svelte';
+  import SystemConfig from './components/SystemConfig.svelte';
 
   let email = '';
   let password = '';
@@ -271,6 +272,9 @@
         <button type="button" class="tab" class:active={activeTab === 'users'} on:click={() => (activeTab = 'users')}>
           Usuarios
         </button>
+        <button type="button" class="tab" class:active={activeTab === 'config'} on:click={() => (activeTab = 'config')}>
+          Configuración
+        </button>
       {/if}
       {#if user.role === 'student'}
         <button type="button" class="tab" class:active={activeTab === 'submit'} on:click={() => (activeTab = 'submit')}>
@@ -345,6 +349,10 @@
 
     {#if activeTab === 'users'}
       <Users user={user} />
+    {/if}
+
+    {#if activeTab === 'config'}
+      <SystemConfig user={user} />
     {/if}
 
     {#if activeTab === 'submit'}
