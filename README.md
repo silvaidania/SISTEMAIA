@@ -243,6 +243,29 @@ Los usuarios con rol `admin` tienen acceso a la pestaña **Configuración** para
 - Los periodos académicos activos se muestran en el formulario de envío de documentos para que los estudiantes seleccionen el periodo correspondiente.
 - Las universidades activas se utilizan en los reportes y estadísticas del sistema.
 
+## Exportación de reportes
+
+El sistema permite exportar reportes en múltiples formatos para facilitar el análisis de datos.
+
+### Formatos disponibles
+
+- **CSV**: formato de texto separado por comas, compatible con Excel y Google Sheets.
+- **PDF**: documento PDF con formato profesional para impresión y distribución.
+- **Excel**: archivo XLSX con múltiples hojas y formato de tabla.
+
+### Reportes exportables
+
+- **Reporte académico**: detalle completo de documentos con información del estudiante, revisor y periodo.
+- **Rendimiento de revisores**: métricas de carga, completados, aprobación y tiempo de revisión.
+- **Progreso de estudiantes**: documentos totales, aprobados, en progreso y tasa de completado.
+
+### Características
+
+- **PDF**: incluye resumen del sistema, detalle de documentos y formato profesional con encabezados y separadores.
+- **Excel**: múltiples hojas (Resumen y Detalle), columnas con formato y datos estructurados.
+- **Descarga directa**: los archivos se descargan automáticamente al hacer clic en el botón de exportación.
+- **Filtrado por periodo**: el reporte académico se puede filtrar por periodo específico antes de exportar.
+
 ## Seguridad implementada
 
 - Contraseñas hasheadas con `bcryptjs`

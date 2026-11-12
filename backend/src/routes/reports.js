@@ -10,6 +10,16 @@ import {
   getObservationsSummary,
   getAcademicReport
 } from '../services/reports.js';
+import {
+  generateAcademicReportPDF,
+  generateReviewerReportPDF,
+  generateStudentReportPDF
+} from '../services/exportPDF.js';
+import {
+  generateAcademicReportExcel,
+  generateReviewerReportExcel,
+  generateStudentReportExcel
+} from '../services/exportExcel.js';
 
 const router = Router();
 
@@ -81,6 +91,80 @@ router.get('/academic', requireAuth, requireRole('admin', 'coordinator'), async 
     const { periodId } = req.query;
     const data = await getAcademicReport(periodId);
     return res.json({ data });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/export/academic/pdf', requireAuth, requireRole('admin', 'coordinator'), async (req, res, next) => {
+  try {
+    const { periodId } = req.query;
+    const pdfBuffer = await generateAcademicReportPDF(periodId);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=reporte-academico.pdf');
+    res.send(pdfBuffer);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/export/academic/excel', requireAuth, requireRole('admin', 'coordinator'), async (req, res, next) => {
+  try {
+    const { periodId } = req.query;
+    const excelBuffer = await generateAcademicReportExcel(periodId);
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=reporte-academico.xlsx');
+    res.send(excelBuffer);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/export/reviewers/pdf', requireAuth, requireRole('admin', 'coordinator'), async (_req, res, next) => {
+  try {
+    const pdfBuffer = await generateReviewerReportPDF();
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=reporte-revisores.pdf');
+    res.send(pdfBuffer);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/export/reviewers/excel', requireAuth, requireRole('admin', 'coordinator'), async (_req, res, next) => {
+  try {
+    const excelBuffer = await generateReviewerReportExcel();
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=reporte-revisores.xlsx');
+    res.send(excelBuffer);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/export/students/pdf', requireAuth, requireRole('admin', 'coordinator'), async (_req, res, next) => {
+  try {
+    const pdfBuffer = await generateStudentReportPDF();
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=reporte-estudiantes.pdf');
+    res.send(pdfBuffer);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/export/students/excel', requireAuth, requireRole('admin', 'coordinator'), async (_req, res, next) => {
+  try {
+    const excelBuffer = await generateStudentReportExcel();
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=reporte-estudiantes.xlsx');
+    res.send(excelBuffer);
   } catch (error) {
     next(error);
   }

@@ -103,6 +103,90 @@
     window.URL.revokeObjectURL(url);
   }
 
+  async function exportPDF(reportType) {
+    try {
+      let url = '';
+      let filename = '';
+
+      switch (reportType) {
+        case 'academic':
+          url = `/reports/export/academic/pdf${selectedPeriodId ? `?periodId=${selectedPeriodId}` : ''}`;
+          filename = 'reporte-academico.pdf';
+          break;
+        case 'reviewers':
+          url = '/reports/export/reviewers/pdf';
+          filename = 'reporte-revisores.pdf';
+          break;
+        case 'students':
+          url = '/reports/export/students/pdf';
+          filename = 'reporte-estudiantes.pdf';
+          break;
+      }
+
+      const response = await fetch(`/api${url}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('sistemaia_token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al exportar PDF');
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
+  async function exportExcel(reportType) {
+    try {
+      let url = '';
+      let filename = '';
+
+      switch (reportType) {
+        case 'academic':
+          url = `/reports/export/academic/excel${selectedPeriodId ? `?periodId=${selectedPeriodId}` : ''}`;
+          filename = 'reporte-academico.xlsx';
+          break;
+        case 'reviewers':
+          url = '/reports/export/reviewers/excel';
+          filename = 'reporte-revisores.xlsx';
+          break;
+        case 'students':
+          url = '/reports/export/students/excel';
+          filename = 'reporte-estudiantes.xlsx';
+          break;
+      }
+
+      const response = await fetch(`/api${url}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('sistemaia_token')}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al exportar Excel');
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      error = err.message;
+    }
+  }
+
   onMount(() => {
     if (user && ['admin', 'coordinator'].includes(user.role)) {
       loadReport('metrics');
@@ -226,9 +310,17 @@
           </article>
         {/each}
       </div>
-      <button type="button" class="secondary" on:click={() => exportToCSV(reviewerPerformance, 'revisores.csv')}>
-        Exportar CSV
-      </button>
+      <div class="actions" style="margin-top: 1rem;">
+        <button type="button" class="secondary" on:click={() => exportToCSV(reviewerPerformance, 'revisores.csv')}>
+          Exportar CSV
+        </button>
+        <button type="button" class="secondary" on:click={() => exportPDF('reviewers')}>
+          Exportar PDF
+        </button>
+        <button type="button" class="secondary" on:click={() => exportExcel('reviewers')}>
+          Exportar Excel
+        </button>
+      </div>
     {:else if activeReport === 'students' && studentProgress}
       <div class="list">
         {#each studentProgress as student}
@@ -260,9 +352,17 @@
           </article>
         {/each}
       </div>
-      <button type="button" class="secondary" on:click={() => exportToCSV(studentProgress, 'estudiantes.csv')}>
-        Exportar CSV
-      </button>
+      <div class="actions" style="margin-top: 1rem;">
+        <button type="button" class="secondary" on:click={() => exportToCSV(studentProgress, 'estudiantes.csv')}>
+          Exportar CSV
+        </button>
+        <button type="button" class="secondary" on:click={() => exportPDF('students')}>
+          Exportar PDF
+        </button>
+        <button type="button" class="secondary" on:click={() => exportExcel('students')}>
+          Exportar Excel
+        </button>
+      </div>
     {:else if activeReport === 'observations' && observationsSummary}
       <div class="grid">
         <article class="panel">
@@ -292,9 +392,17 @@
     {:else if activeReport === 'academic' && academicReport}
       <div class="panel">
         <h3>Reporte académico</h3>
-        <button type="button" class="secondary" on:click={() => exportToCSV(academicReport, 'reporte-academico.csv')}>
-          Exportar CSV
-        </button>
+        <div class="actions" style="margin-bottom: 1rem;">
+          <button type="button" class="secondary" on:click={() => exportToCSV(academicReport, 'reporte-academico.csv')}>
+            Exportar CSV
+          </button>
+          <button type="button" class="secondary" on:click={() => exportPDF('academic')}>
+            Exportar PDF
+          </button>
+          <button type="button" class="secondary" on:click={() => exportExcel('academic')}>
+            Exportar Excel
+          </button>
+        </div>
         <div class="list">
           {#each academicReport as doc}
             <article class="list-item">
