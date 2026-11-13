@@ -1,5 +1,6 @@
 const tokenKey = 'sistemaia_token';
 const userKey = 'sistemaia_user';
+const apiBase = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
 export function getToken() {
   return localStorage.getItem(tokenKey);
@@ -32,7 +33,8 @@ export async function api(path, options = {}) {
     headers['Content-Type'] = 'application/json';
   }
 
-  const response = await fetch(`/api${path}`, {
+  const url = apiBase ? `${apiBase}/api${path}` : `/api${path}`;
+  const response = await fetch(url, {
     ...options,
     headers
   });

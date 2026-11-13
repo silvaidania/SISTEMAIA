@@ -33,15 +33,26 @@ export function createApiRouter() {
   return router;
 }
 
+const configuredOrigins = (env.corsOrigin || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 export const allowedOrigins = [
-  env.corsOrigin,
+  ...configuredOrigins,
   'http://localhost:5173',
   'http://127.0.0.1:5173'
-].filter(Boolean);
+];
+
+const vercelPreviewPattern = /^https:\/\/[a-z0-9-]+\.vercel\.app$/;
 
 export const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      vercelPreviewPattern.test(origin)
+    ) {
       return callback(null, true);
     }
 

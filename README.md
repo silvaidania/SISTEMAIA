@@ -276,11 +276,57 @@ El sistema permite exportar reportes en múltiples formatos para facilitar el an
 - Balance de cargas para asignación de revisores
 - Archivos privados en Supabase Storage
 
-## Vercel
+## Despliegue en Vercel
 
-Este proyecto está preparado como monorepo:
+El monorepo se despliega como **dos proyectos de Vercel** que comparten el mismo repositorio.
 
-- `apps/web` puede desplegarse como frontend estático.
-- `backend` puede desplegarse como proyecto separado con `backend/vercel.json`.
-- Actualiza `VITE_API_URL` para apuntar a la URL real del backend.
-- Configura todas las variables de entorno en Vercel.
+### Proyecto 1: API (`sistemaia-api`)
+
+1. En Vercel, crea un proyecto nuevo e importa el repositorio.
+2. En **Settings → General → Root Directory**, selecciona `backend`.
+3. Framework: **Other** (Vercel detecta `backend/api/index.js` como función serverless).
+4. En **Settings → Git → Include files outside the Root Directory**, activa la opción (necesario porque npm workspaces guarda dependencias en la raíz del repo).
+5. Configura las variables de entorno (ver tabla abajo).
+6. Despliega. La API quedará en `https://<proyecto>.vercel.app` y responde en `/api/*`.
+
+`backend/vercel.json` enruta todas las peticiones a la función Express y `backend/api/index.js` exporta la app.
+
+### Proyecto 2: Web (`sistemaia-web`)
+
+1. Crea otro proyecto de Vercel con el mismo repositorio.
+2. Root Directory: `apps/web`.
+3. Framework: **Vite** (detección automática; `apps/web/vercel.json` ya está configurado).
+4. Activa también **Include files outside the Root Directory**.
+5. Variables de entorno:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_API_URL` = `https://<dominio-del-proyecto-api>.vercel.app` (sin `/api` al final)
+6. Despliega.
+
+### Conectividad frontend → API
+
+`apps/web/src/lib/api.js` usa `VITE_API_URL` cuando existe; si no, usa `/api` relativo.
+
+- **Opción A (recomendada):** define `VITE_API_URL` con el dominio de la API. El frontend llama directamente al backend (CORS ya permite `*.vercel.app`).
+- **Opción B:** no definas `VITE_API_URL` y edita `apps/web/vercel.json` reemplazando `https://sistemaia-api.vercel.app` por el dominio real de la API. Vercel actuará como proxy same-origin para `/api/*`.
+
+### Variables de entorno del backend
+
+| Variable | Descripción |
+|----------|-------------|
+| `SUPABASE_URL` | URL del proyecto Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key de Supabase |
+| `SUPABASE_ANON_KEY` | Anon key de Supabase |
+| `JWT_SECRET` | Secreto para firmar JWT |
+| `JWT_EXPIRES_IN` | Expiración del token (ej. `8h`) |
+| `CORS_ORIGIN` | Origen del frontend, ej. `https://sistemaia-web.vercel.app` |
+| `PASSWORD_PEPPER` | Pepper opcional para hashes |
+| `DEFAULT_REVIEWER_CAPACITY` | Capacidad por defecto de revisores |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | Configuración de email (opcional) |
+| `APP_URL` | URL pública del frontend para enlaces en emails |
+
+### Limitaciones de Vercel
+
+- **Tamaño de archivos:** las funciones serverless aceptan bodies de ~4.5 MB. Los documentos que superen ese tamaño fallarán al subir desde el frontend (el límite interno de 50 MB aplica solo a Storage). Para archivos grandes se requiere un backend con servidor persistente (Render, Railway, VPS).
+- **Cold starts:** la primera petición tras inactividad tarda unos segundos extra.
+- **Sin estado local:** no usar filesystem para archivos temporales; todo va a Supabase Storage.
