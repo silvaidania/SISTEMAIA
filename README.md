@@ -278,39 +278,20 @@ El sistema permite exportar reportes en múltiples formatos para facilitar el an
 
 ## Despliegue en Vercel
 
-El monorepo se despliega como **dos proyectos de Vercel** que comparten el mismo repositorio.
+El monorepo está desplegado como **dos proyectos de Vercel** conectados al repo `silvaidania/SISTEMAIA`. Cada push a `main` dispara un deploy automático de ambos.
 
-### Proyecto 1: API (`sistemaia-api`)
+| Servicio | Proyecto Vercel | URL | Root Directory |
+|----------|-----------------|-----|----------------|
+| API (Express) | `sistemaia-api` | https://sistemaia-api.vercel.app | `backend` |
+| Web (Svelte/Vite) | `sistemaia-web` | https://sistemaia-web.vercel.app | `apps/web` |
 
-1. En Vercel, crea un proyecto nuevo e importa el repositorio.
-2. En **Settings → General → Root Directory**, selecciona `backend`.
-3. Framework: **Other** (Vercel detecta `backend/api/index.js` como función serverless).
-4. En **Settings → Git → Include files outside the Root Directory**, activa la opción (necesario porque npm workspaces guarda dependencias en la raíz del repo).
-5. Configura las variables de entorno (ver tabla abajo).
-6. Despliega. La API quedará en `https://<proyecto>.vercel.app` y responde en `/api/*`.
+### Cómo funciona
 
-`backend/vercel.json` enruta todas las peticiones a la función Express y `backend/api/index.js` exporta la app.
+- **API**: `backend/api/index.js` se compila como función serverless; `backend/vercel.json` enruta todas las peticiones a `/api`. La app Express vive en `backend/src/app.js` (`createApp()`), compartida con `src/index.js` para desarrollo local.
+- **Web**: Vite compila a `dist/`. `apps/web/src/lib/api.js` usa `VITE_API_URL` para llamar a la API directamente (CORS permite `*.vercel.app` para previews).
+- **Variables de entorno**: configuradas en cada proyecto de Vercel (Settings → Environment Variables). Nunca en el repo.
 
-### Proyecto 2: Web (`sistemaia-web`)
-
-1. Crea otro proyecto de Vercel con el mismo repositorio.
-2. Root Directory: `apps/web`.
-3. Framework: **Vite** (detección automática; `apps/web/vercel.json` ya está configurado).
-4. Activa también **Include files outside the Root Directory**.
-5. Variables de entorno:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
-   - `VITE_API_URL` = `https://<dominio-del-proyecto-api>.vercel.app` (sin `/api` al final)
-6. Despliega.
-
-### Conectividad frontend → API
-
-`apps/web/src/lib/api.js` usa `VITE_API_URL` cuando existe; si no, usa `/api` relativo.
-
-- **Opción A (recomendada):** define `VITE_API_URL` con el dominio de la API. El frontend llama directamente al backend (CORS ya permite `*.vercel.app`).
-- **Opción B:** no definas `VITE_API_URL` y edita `apps/web/vercel.json` reemplazando `https://sistemaia-api.vercel.app` por el dominio real de la API. Vercel actuará como proxy same-origin para `/api/*`.
-
-### Variables de entorno del backend
+### Variables de entorno del backend (`sistemaia-api`)
 
 | Variable | Descripción |
 |----------|-------------|
@@ -323,7 +304,15 @@ El monorepo se despliega como **dos proyectos de Vercel** que comparten el mismo
 | `PASSWORD_PEPPER` | Pepper opcional para hashes |
 | `DEFAULT_REVIEWER_CAPACITY` | Capacidad por defecto de revisores |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | Configuración de email (opcional) |
-| `APP_URL` | URL pública del frontend para enlaces en emails |
+| `APP_URL` | `https://sistemaia-web.vercel.app` (URL pública para enlaces en emails) |
+
+### Variables de entorno del frontend (`sistemaia-web`)
+
+| Variable | Descripción |
+|----------|-------------|
+| `VITE_SUPABASE_URL` | URL del proyecto Supabase |
+| `VITE_SUPABASE_ANON_KEY` | Anon key de Supabase (pública por diseño) |
+| `VITE_API_URL` | `https://sistemaia-api.vercel.app` |
 
 ### Limitaciones de Vercel
 
