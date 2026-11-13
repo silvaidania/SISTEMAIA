@@ -47,7 +47,6 @@
     error = '';
     success = '';
     loading = true;
-    console.log('signInWithEmail called', { email, isSignUp });
 
     try {
       if (isSignUp) {
@@ -71,12 +70,7 @@
           password
         });
 
-        if (error) {
-          console.error('Supabase auth error:', error);
-          throw error;
-        }
-
-        console.log('Supabase auth success:', data);
+        if (error) throw error;
 
         // Obtener el perfil del usuario
         const { data: profile, error: profileError } = await supabase
@@ -84,10 +78,6 @@
           .select('*')
           .eq('id', data.user.id)
           .single();
-
-        if (profileError) {
-          console.error('Profile fetch error:', profileError);
-        }
 
         if (profileError || !profile) {
           // Si no existe el perfil, crearlo
@@ -104,15 +94,12 @@
 
           if (createError) throw createError;
 
-          console.log('New profile created:', newProfile);
           dispatch('login', { user: newProfile, token: data.session.access_token });
         } else {
-          console.log('Existing profile found:', profile);
           dispatch('login', { user: profile, token: data.session.access_token });
         }
       }
     } catch (err) {
-      console.error('Auth error:', err);
       error = err.message;
       loading = false;
     }

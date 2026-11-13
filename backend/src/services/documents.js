@@ -226,10 +226,12 @@ export async function updateDocumentStatus(documentId, status, extra = {}) {
     throw currentError;
   }
 
+  const { actorId, ...dbUpdates } = extra;
+
   const updates = {
     status,
     updated_at: new Date().toISOString(),
-    ...extra
+    ...dbUpdates
   };
 
   if (status === 'approved') {
@@ -259,14 +261,14 @@ export async function updateDocumentStatus(documentId, status, extra = {}) {
       const { data: actorProfile } = await supabase
         .from('profiles')
         .select('role')
-        .eq('id', extra.actorId)
+        .eq('id', actorId)
         .single();
 
       await notifyDocumentStatusChange(
         documentWithDetails,
         currentDoc.status,
         status,
-        extra.actorId || null,
+        actorId || null,
         actorProfile?.role || null
       );
     } catch (notificationError) {

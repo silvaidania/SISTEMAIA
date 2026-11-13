@@ -47,11 +47,7 @@
   };
 
   async function handleLogin(event) {
-    console.log('handleLogin called', event.detail);
     const { user: profile, token } = event.detail;
-    console.log('Profile:', profile);
-    console.log('Token:', token ? 'present' : 'missing');
-    
     setSession(token, profile);
     user = profile;
     
@@ -74,7 +70,6 @@
     // El usuario podrá navegar al dashboard desde la página principal
     showHome = true;
     showAuth = false;
-    console.log('State after login - showHome:', showHome, 'showAuth:', showAuth, 'user:', user);
     await loadAll();
   }
 
@@ -161,9 +156,7 @@
     try {
       const data = await api('/academic-periods');
       periods = data.periods || [];
-      console.log('Periodos cargados:', periods);
-    } catch (err) {
-      console.error('Error cargando periodos:', err);
+    } catch {
       periods = [];
     }
   }
