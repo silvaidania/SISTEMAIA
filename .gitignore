@@ -8,3 +8,21 @@ build/
 .DS_Store
 .vercel
 coverage/
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+appmovil/android/local.properties
+appmovil/android/key.properties
+appmovil/android/app/debug
+appmovil/android/app/profile
+appmovil/android/app/release
+appmovil/android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+appmovil/ios/Pods/
+appmovil/ios/.symlinks/
+appmovil/macos/Pods/
+appmovil/windows/flutter/ephemeral/

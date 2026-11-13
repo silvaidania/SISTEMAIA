@@ -1,0 +1,59 @@
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Android
+android/.gradle/
+android/app/debug
+android/app/profile
+android/app/release
+android/local.properties
+*.iml
+.idea/
+*.ipr
+*.iws
+
+# iOS
+ios/.symlinks/
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/ephemeral
+ios/Flutter/app.flx
+ios/Flutter/app.zip
+ios/Flutter/flutter_assets/
+ios/Flutter/flutter_export_environment.sh
+ios/ServiceDefinitions.json
+ios/Runner/GeneratedPluginRegistrant.*
+
+# macOS
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/.symlinks/
+
+# Windows
+windows/flutter/ephemeral/
+windows/flutter/CMakeLists.txt
+
+# Linux
+linux/flutter/ephemeral/
+
+# Web
+lib/generated_plugin_registrant.dart
+
+# VS Code
+.vscode/
+
+# Misc
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+Thumbs.db

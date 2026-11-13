@@ -1,6 +1,8 @@
 <script>
   import { createEventDispatcher } from 'svelte';
 
+  export let user = null;
+
   const dispatch = createEventDispatcher();
 
   function goToLogin() {
@@ -9,6 +11,14 @@
 
   function goToRegister() {
     dispatch('register');
+  }
+
+  function goToDashboard() {
+    dispatch('dashboard');
+  }
+
+  function logout() {
+    dispatch('logout');
   }
 </script>
 
@@ -57,18 +67,32 @@
     </div>
 
     <div class="cta-section">
-      <div class="cta-buttons">
-        <button type="button" class="cta-button primary" on:click={goToLogin}>
-          Iniciar Sesión
-        </button>
-        <button type="button" class="cta-button secondary" on:click={goToRegister}>
-          Registrarse
-        </button>
-      </div>
-      
-      <p class="cta-text">
-        ¿No tienes cuenta? Regístrate para comenzar a gestionar tus documentos de estadías.
-      </p>
+      {#if user}
+        <div class="user-welcome">
+          <p class="welcome-text">¡Bienvenido, {user.full_name}!</p>
+          <p class="role-text">Rol: {user.role}</p>
+        </div>
+        <div class="cta-buttons">
+          <button type="button" class="cta-button primary" on:click={goToDashboard}>
+            Ir al Panel de Control
+          </button>
+          <button type="button" class="cta-button secondary" on:click={logout}>
+            Cerrar Sesión
+          </button>
+        </div>
+      {:else}
+        <div class="cta-buttons">
+          <button type="button" class="cta-button primary" on:click={goToLogin}>
+            Iniciar Sesión
+          </button>
+          <button type="button" class="cta-button secondary" on:click={goToRegister}>
+            Registrarse
+          </button>
+        </div>
+        <p class="cta-text">
+          ¿No tienes cuenta? Regístrate para comenzar a gestionar tus documentos de estadías.
+        </p>
+      {/if}
     </div>
 
     <div class="footer-section">
@@ -188,6 +212,23 @@
   .cta-section {
     text-align: center;
     margin-bottom: 4rem;
+  }
+
+  .user-welcome {
+    margin-bottom: 2rem;
+  }
+
+  .welcome-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: white;
+  }
+
+  .role-text {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin: 0;
   }
 
   .cta-buttons {
