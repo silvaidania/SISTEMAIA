@@ -278,20 +278,31 @@ El sistema permite exportar reportes en múltiples formatos para facilitar el an
 
 ## Despliegue en Vercel
 
-El monorepo está desplegado como **dos proyectos de Vercel** conectados al repo `silvaidania/SISTEMAIA`. Cada push a `main` dispara un deploy automático de ambos.
+El sistema está desplegado como **un solo proyecto de Vercel con Services** (beta) conectado al repo `silvaidania/SISTEMAIA`. Cada push a `main` dispara un deploy automático.
 
-| Servicio | Proyecto Vercel | URL | Root Directory |
-|----------|-----------------|-----|----------------|
-| API (Express) | `sistemaia-api` | https://sistemaia-api.vercel.app | `backend` |
-| Web (Svelte/Vite) | `sistemaia-web` | https://sistemaia-web.vercel.app | `apps/web` |
+| Recurso | Valor |
+|---------|-------|
+| Proyecto | `sistemaia` |
+| URL producción | https://sistemaia-nine.vercel.app |
+| Config | `vercel.json` raíz (clave `services`) |
 
-### Cómo funciona
+### Servicios
 
-- **API**: `backend/api/index.js` se compila como función serverless; `backend/vercel.json` enruta todas las peticiones a `/api`. La app Express vive en `backend/src/app.js` (`createApp()`), compartida con `src/index.js` para desarrollo local.
-- **Web**: Vite compila a `dist/`. `apps/web/src/lib/api.js` usa `VITE_API_URL` para llamar a la API directamente (CORS permite `*.vercel.app` para previews).
-- **Variables de entorno**: configuradas en cada proyecto de Vercel (Settings → Environment Variables). Nunca en el repo.
+| Servicio | Root | Framework | Exposición pública |
+|----------|------|-----------|--------------------|
+| `web` | `apps/web` | Vite | `/(.*)` — todo el tráfico restante |
+| `backend` | `backend` | Express (`api/index.js`) | `/api/(.*)` — el servicio recibe el path original `/api/...` |
 
-### Variables de entorno del backend (`sistemaia-api`)
+- **Sin bindings**: el frontend corre en el navegador y llama a `/api/*` same-origin; el rewrite superior enruta al servicio backend. No hay llamadas server-side entre servicios.
+- **CORS**: same-origin por el rewrite, pero `CORS_ORIGIN` igual admite orígenes explícitos y `*.vercel.app` para previews.
+- **Env vars**: un solo set compartido por ambos servicios (Settings → Environment Variables del proyecto `sistemaia`). `VITE_API_URL` no se define: el frontend usa `/api` relativo.
+- **`.vercelignore`**: excluye `appmovil/`, `node_modules/`, `dist/` y artefactos de build del upload (la app Flutter no se despliega).
+
+### Estructura del backend para serverless
+
+`backend/src/app.js` exporta `createApp()` (Express + CORS + rutas). La usan tanto `src/index.js` (servidor local, no auto-escucha si `VERCEL=1`) como `api/index.js` (entrypoint de la función serverless).
+
+### Variables de entorno (`sistemaia`)
 
 | Variable | Descripción |
 |----------|-------------|
@@ -300,19 +311,20 @@ El monorepo está desplegado como **dos proyectos de Vercel** conectados al repo
 | `SUPABASE_ANON_KEY` | Anon key de Supabase |
 | `JWT_SECRET` | Secreto para firmar JWT |
 | `JWT_EXPIRES_IN` | Expiración del token (ej. `8h`) |
-| `CORS_ORIGIN` | Origen del frontend, ej. `https://sistemaia-web.vercel.app` |
+| `CORS_ORIGIN` | Orígenes permitidos separados por coma (ej. `http://localhost:5173,https://sistemaia-nine.vercel.app`); `*.vercel.app` siempre permitido para previews |
 | `PASSWORD_PEPPER` | Pepper opcional para hashes |
 | `DEFAULT_REVIEWER_CAPACITY` | Capacidad por defecto de revisores |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | Configuración de email (opcional) |
-| `APP_URL` | `https://sistemaia-web.vercel.app` (URL pública para enlaces en emails) |
+| `APP_URL` | `https://sistemaia-nine.vercel.app` (URL pública para enlaces en emails) |
 
-### Variables de entorno del frontend (`sistemaia-web`)
+### Variables de entorno del frontend
 
 | Variable | Descripción |
 |----------|-------------|
 | `VITE_SUPABASE_URL` | URL del proyecto Supabase |
 | `VITE_SUPABASE_ANON_KEY` | Anon key de Supabase (pública por diseño) |
-| `VITE_API_URL` | `https://sistemaia-api.vercel.app` |
+
+> `VITE_API_URL` **no** se define en producción: el frontend llama a `/api/*` same-origin y el rewrite superior enruta al servicio backend.
 
 ### Limitaciones de Vercel
 
