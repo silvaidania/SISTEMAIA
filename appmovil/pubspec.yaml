@@ -1,6 +1,9 @@
-name: speedometer
-description: A speedometer app that uses GPS to measure speed
-tublish_to: 'none'
+name: sistemaia_app
+
+description: Cliente móvil UTCJ - Sistema de Gestión de Documentos de Estadías
+
+publish_to: 'none'
+
 version: 1.0.0+1
 
 environment:
@@ -9,10 +12,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  geolocator: ^11.0.0
-  permission_handler: ^11.0.1
-  provider: ^6.1.1
-  google_fonts: ^6.1.0
+  http: ^1.2.2
+  supabase_flutter: ^2.8.0
+  file_picker: ^10.3.3
+  url_launcher: ^6.3.1
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,4 @@
-package com.example.speedometer
+package com.utcj.estadias
 
 import io.flutter.embedding.android.FlutterActivity
 
