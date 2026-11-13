@@ -1,5 +1,5 @@
 import { supabase } from '../src/config/supabase.js';
-import bcrypt from 'bcryptjs';
+import { hashPassword } from '../src/utils/security.js';
 
 const testUsers = [
   {
@@ -43,7 +43,7 @@ for (const user of testUsers) {
       console.log(`Usuario ${user.email} ya existe, actualizando...`);
       
       // Actualizar contraseña
-      const passwordHash = await bcrypt.hash(user.password, 10);
+      const passwordHash = await hashPassword(user.password);
       await supabase
         .from('profiles')
         .update({
@@ -80,7 +80,7 @@ for (const user of testUsers) {
       }
 
       // Crear perfil
-      const passwordHash = await bcrypt.hash(user.password, 10);
+      const passwordHash = await hashPassword(user.password);
       const { error: profileError } = await supabase.from('profiles').insert({
         id: authUser.id,
         email: user.email,
