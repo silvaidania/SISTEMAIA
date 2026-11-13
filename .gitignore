@@ -26,3 +26,4 @@ appmovil/ios/Pods/
 appmovil/ios/.symlinks/
 appmovil/macos/Pods/
 appmovil/windows/flutter/ephemeral/
+.env*

@@ -1,0 +1,23 @@
+# Dependencias y artefactos de build (no necesarios para el deploy)
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.dart_tool/
+**/.dart_tool/
+**/.gradle/
+**/build/
+**/Pods/
+**/.symlinks/
+
+# App móvil Flutter (no se despliega en Vercel)
+appmovil/
+AppMovilIA/
+
+# Entorno local y metadata
+.env
+.env.*
+!.env.example
+*.log
+.vercel/
+.git/
