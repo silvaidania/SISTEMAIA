@@ -150,7 +150,12 @@
 </script>
 
 <div class="sitemap-container" class:sidebar={isSidebar}>
-  {#if !isSidebar}
+  {#if isSidebar}
+    <div class="sidebar-brand">
+      <img src="/logo-utcj.svg" alt="Logo UTCJ" class="sidebar-logo" />
+      <span class="sidebar-title">UTCJ · Estadías</span>
+    </div>
+  {:else}
     <header class="sitemap-header">
       <button type="button" class="back-button" on:click={goBack}>
         ← Volver
@@ -319,6 +324,27 @@
 
   .role-icon {
     font-size: 1.25rem;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  }
+
+  .sidebar-logo {
+    width: 40px;
+    height: auto;
+  }
+
+  .sidebar-title {
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    line-height: 1.2;
   }
 
   .sitemap-content {

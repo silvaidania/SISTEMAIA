@@ -114,6 +114,9 @@
 
 <div class="auth-container">
   <div class="auth-card">
+    <div class="auth-logo">
+      <img src="/logo-utcj.svg" alt="Logo UTCJ" class="logo-image" />
+    </div>
     <h2>{isSignUp ? 'Crear cuenta' : 'Iniciar sesión'}</h2>
     <p class="subtitle">Universidad Tecnológica de Ciudad Juárez</p>
     <p class="subtitle-small">Sistema de Gestión de Documentos de Estadías</p>
@@ -221,6 +224,17 @@
     max-width: 400px;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
     border-top: 4px solid #f97316;
+  }
+
+  .auth-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .logo-image {
+    width: 90px;
+    height: auto;
   }
 
   h2 {

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="64" height="64">
+  <path d="M100 10 L180 40 L180 130 C180 185 145 220 100 235 C55 220 20 185 20 130 L20 40 Z" fill="#1e3a8a" stroke="#60a5fa" stroke-width="6"/>
+  <text x="100" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="55" font-weight="700" fill="#ffffff" letter-spacing="3">UTCJ</text>
+  <rect x="45" y="175" width="110" height="6" rx="3" fill="#f59e0b"/>
+</svg>

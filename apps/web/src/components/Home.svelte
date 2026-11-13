@@ -26,9 +26,7 @@
   <div class="home-content">
     <div class="hero-section">
       <div class="logo-container">
-        <div class="logo-circle">
-          <span class="logo-text">UTCJ</span>
-        </div>
+        <img src="/logo-utcj.svg" alt="Logo UTCJ" class="logo-image" />
       </div>
       
       <h1 class="main-title">Universidad Tecnológica de Ciudad Juárez</h1>
@@ -127,24 +125,15 @@
     margin-bottom: 2rem;
   }
 
-  .logo-circle {
-    width: 120px;
-    height: 120px;
-    background: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    border: 4px solid #60a5fa;
+  .logo-image {
+    width: 140px;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.35));
+    transition: transform 0.3s ease;
   }
 
-  .logo-text {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1e3a8a;
-    letter-spacing: -0.05em;
+  .logo-image:hover {
+    transform: scale(1.05);
   }
 
   .main-title {
@@ -305,13 +294,8 @@
       font-size: 1rem;
     }
 
-    .logo-circle {
-      width: 100px;
-      height: 100px;
-    }
-
-    .logo-text {
-      font-size: 1.5rem;
+    .logo-image {
+      width: 110px;
     }
 
     .features-section {

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.4"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Escudo exterior -->
+  <path d="M100 10 L180 40 L180 130 C180 185 145 220 100 235 C55 220 20 185 20 130 L20 40 Z" 
+        fill="url(#shieldGrad)" stroke="#60a5fa" stroke-width="3"/>
+  
+  <!-- Borde interior -->
+  <path d="M100 25 L168 50 L168 128 C168 172 138 202 100 216 C62 202 32 172 32 128 L32 50 Z" 
+        fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3"/>
+  
+  <!-- Detalle superior: torre/biblioteca estilizada -->
+  <g transform="translate(100, 60)" fill="#ffffff">
+    <!-- Columnas -->
+    <rect x="-45" y="-15" width="8" height="45" rx="2"/>
+    <rect x="-20" y="-15" width="8" height="45" rx="2"/>
+    <rect x="5" y="-15" width="8" height="45" rx="2"/>
+    <rect x="30" y="-15" width="8" height="45" rx="2"/>
+    <!-- Arco central -->
+    <path d="M-8 -15 Q0 -30 8 -15" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+    <!-- Base -->
+    <rect x="-55" y="30" width="110" height="8" rx="2"/>
+    <rect x="-48" y="22" width="96" height="8" rx="2"/>
+  </g>
+  
+  <!-- Texto UTCJ -->
+  <text x="100" y="140" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="42" font-weight="700" fill="#ffffff" letter-spacing="2">UTCJ</text>
+  
+  <!-- Subtítulo -->
+  <text x="100" y="165" text-anchor="middle" font-family="Arial, sans-serif" 
+        font-size="11" font-weight="400" fill="#93c5fd" letter-spacing="1">CIUDAD JUÁREZ</text>
+  
+  <!-- Franja inferior -->
+  <rect x="35" y="185" width="130" height="4" rx="2" fill="#f59e0b"/>
+  <rect x="50" y="195" width="100" height="3" rx="1.5" fill="#f59e0b" opacity="0.6"/>
+  
+  <!-- Brillo decorativo -->
+  <path d="M40 60 Q100 30 160 60 L160 75 Q100 50 40 75 Z" fill="url(#shineGrad)" opacity="0.3"/>
+</svg>
